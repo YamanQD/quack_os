@@ -5,11 +5,3 @@ edition = "2018"
 authors = ["Yaman Qassas <yaman102011@gmail.com>"]
 
 [dependencies]
-
-# `cargo build` profile
-[profile.dev]
-panic = "abort" # disable stack unwinding on panic
-
-# `cargo build --release profile`
-[profile.release]
-panic = "abort" # disable stack unwinding on panic
