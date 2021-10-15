@@ -5,3 +5,4 @@ edition = "2018"
 authors = ["Yaman Qassas <yaman102011@gmail.com>"]
 
 [dependencies]
+bootloader = "0.9.8"
