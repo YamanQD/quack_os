@@ -7,4 +7,7 @@ fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
 
-fn main() {}
+#[no_mangle]
+pub extern "C" fn _start() -> ! {
+    loop {}
+}
