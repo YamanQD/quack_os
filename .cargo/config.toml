@@ -1,0 +1,6 @@
+[unstable]
+build-std-features = ["compiler-builtins-mem"] # Enable memory intrinsics
+build-std = ["core", "compiler_builtins"] # Recompile these libraries
+
+[build]
+target = "x86_64-quack_os.json" # Default `cargo build` --target
