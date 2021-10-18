@@ -8,15 +8,15 @@ mod vga_buffer;
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
     println!("qUaCk {}", "quack");
-    println!();
-    print!("quack?");
+
     // Infinite loop for diverging function
     loop {}
 }
 
 // Called on panic
 #[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
+fn panic(info: &PanicInfo) -> ! {
+    println!("{}", info);
     // Infinite loop for diverging function
     loop {}
 }
