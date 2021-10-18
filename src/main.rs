@@ -7,7 +7,7 @@ mod vga_buffer;
 // Entry point
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    vga_buffer::test_write_macro();
+    vga_buffer::test_write();
 
     // Infinite loop for diverging function
     loop {}

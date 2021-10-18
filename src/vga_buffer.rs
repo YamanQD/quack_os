@@ -90,8 +90,32 @@ impl Writer {
         }
     }
 
-    //TODO
-    fn new_line(&mut self) {}
+    fn new_line(&mut self) {
+        // Copy each line to the one above it
+        for row in 1..BUFFER_HEIGHT {
+            for col in 0..BUFFER_WIDTH {
+                let character = self.buffer.chars[row][col].read();
+                self.buffer.chars[row - 1][col].write(character);
+            }
+        }
+
+        // Clear last line
+        self.clear_row(BUFFER_HEIGHT - 1);
+
+        self.column_position = 0;
+    }
+
+    fn clear_row(&mut self, row: usize) {
+        // Fill line with blank characters
+        let blank = ScreenChar {
+            ascii_character: b' ',
+            color_code: self.color_code,
+        };
+
+        for col in 0..BUFFER_WIDTH {
+            self.buffer.chars[row][col].write(blank);
+        }
+    }
 }
 
 use core::fmt;
@@ -102,7 +126,7 @@ impl fmt::Write for Writer {
     }
 }
 
-pub fn test_write_macro() {
+pub fn test_write() {
     let mut writer = Writer {
         column_position: 0,
         color_code: ColorCode::new(Color::Yellow, Color::Black),
@@ -110,5 +134,5 @@ pub fn test_write_macro() {
     };
 
     use core::fmt::Write;
-    write!(writer, "Quack {}", 10.0 / 3.0).unwrap();
+    write!(writer, "Quack\nquack\n\nquack").unwrap();
 }
