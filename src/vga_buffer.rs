@@ -49,14 +49,14 @@ struct Buffer {
     chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT],
 }
 
-struct Writer {
+pub struct Writer {
     column_position: usize,
     color_code: ColorCode,
     buffer: &'static mut Buffer,
 }
 
 impl Writer {
-    fn write_byte(&mut self, byte: u8) {
+    pub fn write_byte(&mut self, byte: u8) {
         match byte {
             b'\n' => self.new_line(),
             byte => {
@@ -79,7 +79,7 @@ impl Writer {
         }
     }
 
-    fn write_string(&mut self, s: &str) {
+    pub fn write_string(&mut self, s: &str) {
         for byte in s.bytes() {
             match byte {
                 // Print printable ascii character
@@ -126,13 +126,14 @@ impl fmt::Write for Writer {
     }
 }
 
-pub fn test_write() {
-    let mut writer = Writer {
+use lazy_static::lazy_static;
+use spin::Mutex;
+// Lazily initialize static WRITER when it's accessed the first time
+lazy_static! {
+    // If Mutex is busy, burns CPU time until the mutex is free
+    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
         column_position: 0,
         color_code: ColorCode::new(Color::Yellow, Color::Black),
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-    };
-
-    use core::fmt::Write;
-    write!(writer, "Quack\nquack\n\nquack").unwrap();
+    });
 }
