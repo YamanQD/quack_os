@@ -41,9 +41,12 @@ struct ScreenChar {
 
 const BUFFER_WIDTH: usize = 80; // 80 characters per line
 const BUFFER_HEIGHT: usize = 25; // 25 lines
+use volatile::Volatile;
+
 struct Buffer {
     // 2D array of ScreenChars
-    chars: [[ScreenChar; BUFFER_WIDTH]; BUFFER_HEIGHT],
+    // Volatile to make sure compiler doesn't optimize reads/writes
+    chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT],
 }
 
 struct Writer {
@@ -66,10 +69,10 @@ impl Writer {
 
                 let color_code = self.color_code;
 
-                self.buffer.chars[row][col] = ScreenChar {
+                self.buffer.chars[row][col].write(ScreenChar {
                     ascii_character: byte,
                     color_code,
-                };
+                });
 
                 self.column_position += 1;
             }
