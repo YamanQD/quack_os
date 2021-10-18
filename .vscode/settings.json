@@ -1,0 +1,7 @@
+{
+    "rust-analyzer.checkOnSave.allTargets": false,
+    "rust-analyzer.checkOnSave.extraArgs": [
+        "--target",
+        "x86_64-quack_os.json"
+    ]
+}
