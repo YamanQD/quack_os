@@ -7,12 +7,9 @@ mod vga_buffer;
 // Entry point
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    use core::fmt::Write;
-    use vga_buffer::WRITER;
-
-    WRITER.lock().write_str("Quack quack!\n").unwrap();
-    write!(WRITER.lock(), "100/3 = {}", 100.0 / 3.0).unwrap();
-
+    println!("qUaCk {}", "quack");
+    println!();
+    print!("quack?");
     // Infinite loop for diverging function
     loop {}
 }

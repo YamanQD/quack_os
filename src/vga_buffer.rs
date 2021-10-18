@@ -105,8 +105,8 @@ impl Writer {
         self.column_position = 0;
     }
 
+    // Fill line with blank characters
     fn clear_row(&mut self, row: usize) {
-        // Fill line with blank characters
         let blank = ScreenChar {
             ascii_character: b' ',
             color_code: self.color_code,
@@ -130,10 +130,31 @@ use lazy_static::lazy_static;
 use spin::Mutex;
 // Lazily initialize static WRITER when it's accessed the first time
 lazy_static! {
-    // If Mutex is busy, burns CPU time until the mutex is free
+    // If Mutex is busy, it burns CPU time until the mutex is free
     pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
         column_position: 0,
         color_code: ColorCode::new(Color::Yellow, Color::Black),
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
     });
+}
+
+// Global print! macro
+#[macro_export]
+macro_rules! print {
+    ($($arg:tt)*) => ($crate::vga_buffer::_print(format_args!($($arg)*)).unwrap());
+}
+
+// Global println! macro
+#[macro_export]
+macro_rules! println {
+    () => (print!("\n"));
+    ($($arg:tt)*) => (print!("{}\n", format_args!($($arg)*)));
+}
+
+// _print function using WRITER
+#[doc(hidden)]
+pub fn _print(args: fmt::Arguments) -> fmt::Result {
+    use core::fmt::Write;
+    WRITER.lock().write_fmt(args).unwrap();
+    Ok(())
 }
