@@ -53,7 +53,7 @@ struct Writer {
 }
 
 impl Writer {
-    pub fn write_byte(&mut self, byte: u8) {
+    fn write_byte(&mut self, byte: u8) {
         match byte {
             b'\n' => self.new_line(),
             byte => {
@@ -76,16 +76,27 @@ impl Writer {
         }
     }
 
+    fn write_string(&mut self, s: &str) {
+        for byte in s.bytes() {
+            match byte {
+                // Print printable ascii character
+                0x20..=0x7E | b'\n' => self.write_byte(byte),
+                // Print ■ for unprintable characters
+                _ => self.write_byte(0xFE),
+            }
+        }
+    }
+
     //TODO
     fn new_line(&mut self) {}
 }
 
-pub fn test_write_byte() {
+pub fn test_write_string() {
     let mut writer = Writer {
         column_position: 0,
         color_code: ColorCode::new(Color::Yellow, Color::Black),
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
     };
 
-    writer.write_byte(b'B');
+    writer.write_string("Quack كواك quack!");
 }
